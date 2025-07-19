@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            /* Changed for wider screens in media query */
+            align-items: center; 
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-50px, -50px) rotate(360deg); }
+        }
+
+        /* Container Styles */
+        .container {
+            display: flex;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 1000px; /* Still maintains a max-width for the entire container */
+            width: 100%;
+            position: relative;
+            animation: slideIn 0.8s ease-out;
+            z-index: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Left Panel Styles */
+        .left-panel {
+            /* flex: 1; This was causing issues with flex-basis */
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #ff4757 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100%;
+            /* min-height: 300px; /* A fallback min-height if content is very short */
+        }
+
+        .floating-icons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+            z-index: 3;
+        }
+
+        .floating-icons span {
+            display: inline-block;
+            margin: 0 5px;
+            animation: float-icons 3s ease-in-out infinite;
+        }
+
+        .floating-icons span:nth-child(2) {
+            animation-delay: -1s;
+        }
+
+        .floating-icons span:nth-child(3) {
+            animation-delay: -2s;
+        }
+
+        @keyframes float-icons {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .brand-logo {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 30px;
+        }
+
+        .heart-icon {
+            font-size: 80px;
+            color: #fff;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .heart-icon::before {
+            content: '❤️';
+        }
+
+        .heart-icon::after {
+            content: '+';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.4em;
+            color: #fff;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 50%;
+            padding: 6px;
+            line-height: 1;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .description {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+            max-width: 280px;
+        }
+
+        /* Right Panel Styles (Form) */
+        .right-panel {
+            /* flex: 1.2; Also causing issues */
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            justify-content: flex-start;
+            min-height: 100%; /* Ensures it stretches to height of left panel */
+        }
+
+        .registration-heading {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .registration-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            flex: 1;
+            min-width: 150px; /* Ensure fields don't get too small before wrapping */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-group input.valid,
+        .form-group select.valid {
+            border-color: #27ae60;
+            background: #fff;
+        }
+
+        .form-group input.invalid,
+        .form-group select.invalid {
+            border-color: #e74c3c;
+            background: #fff;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-top: 2px;
+            accent-color: #3498db;
+        }
+
+        .checkbox-group label {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+
+        .checkbox-group a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        /* Button Styles */
+        .register-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .register-button:hover::before {
+            left: 100%;
+        }
+
+        .register-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .register-button:active {
+            transform: translateY(0);
+        }
+
+        /* "Or register with" Separator */
+        .or-register-with {
+            text-align: center;
+            margin: 25px 0;
+            color: #7f8c8d;
+            position: relative;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .or-register-with::before,
+        .or-register-with::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 35%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .or-register-with::before {
+            left: 0;
+        }
+
+        .or-register-with::after {
+            right: 0;
+        }
+
+        /* Social Login Buttons */
+        .social-login-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .social-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-button:active {
+            transform: translateY(-1px);
+        }
+
+        .social-button.facebook {
+            background: #4267B2;
+            color: white;
+        }
+
+        .social-button.google {
+            background: #DB4437;
+            color: white;
+        }
+
+        .social-button.apple {
+            background: #000;
+            color: white;
+        }
+
+        /* Sign-in Link */
+        .signin-link {
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .signin-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .signin-link a:hover {
+            text-decoration: underline;
+            color: #2980b9;
+        }
+
+        /* Loading State for Button */
+        .loading {
+            pointer-events: none;
+            background: #95a5a6 !important;
+            cursor: not-allowed;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Validation Messages */
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Password Strength Indicator */
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .strength-weak { color: #e74c3c; }
+        .strength-medium { color: #f39c12; }
+        .strength-strong { color: #27ae60; }
+
+        /* Responsive Design */
+        @media (min-width: 769px) { /* For wider screens */
+            body {
+                align-items: flex-start; /* Align container to top of viewport */
+                padding-top: 20px;
+                padding-bottom: 20px;
+            }
+
+            .container {
+                min-height: auto;
+            }
+
+            .left-panel {
+                flex: 0 0 350px; /* Fixed width of 350px, not growing or shrinking */
+            }
+
+            .right-panel {
+                flex: 1; /* Take up the remaining space */
+                overflow-y: auto; /* Add scrollbar to right panel if its content exceeds its height */
+                min-height: auto; /* Allow content to dictate height, but scroll if too big */
+                max-height: 95vh; /* Max height of the right panel, scroll if content exceeds */
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+            .container {
+                flex-direction: column;
+                max-width: 450px;
+                min-height: auto;
+                overflow-y: visible;
+            }
+            
+            .left-panel {
+                padding: 30px 20px;
+                min-height: 180px;
+                flex: none; /* Remove flex properties for mobile to stack properly */
+                width: 100%; /* Ensure it takes full width on mobile */
+            }
+            
+            .right-panel {
+                padding: 30px 20px;
+                max-height: none;
+                overflow-y: visible;
+                flex: none; /* Remove flex properties for mobile to stack properly */
+                width: 100%; /* Ensure it takes full width on mobile */
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .heart-icon {
+                font-size: 60px;
+            }
+            
+            .brand-title {
+                font-size: 24px;
+            }
+            
+            .registration-heading {
+                font-size: 24px;
+            }
+            
+            .description {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                border-radius: 16px;
+            }
+            
+            .left-panel, .right-panel {
+                padding: 20px;
+            }
+            
+            .social-login-buttons {
+                gap: 10px;
+            }
+            
+            .social-button {
+                width: 45px;
+                height: 45px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="floating-icons">
+                <span>✨</span>
+                <span>💊</span>
+                <span>🏥</span>
+            </div>
+            <div class="brand-logo">
+                <div class="heart-icon"></div>
+                <h1 class="brand-title">MediTrack</h1>
+            </div>
+            <p class="description">Join thousands of users who trust MediTrack for their health journey. Start your personalized medical tracking today.</p>
+        </div>
+        <div class="right-panel">
+            <h2 class="registration-heading">Create Account</h2>
+            <p class="registration-subtitle">Join MediTrack and start your health journey</p>
+            <form id="registrationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required aria-label="First Name">
+                        <div class="error-message" id="firstNameError">First name is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required aria-label="Last Name">
+                        <div class="error-message" id="lastNameError">Last name is required</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email address" required aria-label="Email Address">
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required aria-label="Phone Number">
+                    <div class="error-message" id="phoneError">Please enter a valid phone number</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" required aria-label="Date of Birth">
+                        <div class="error-message" id="dateOfBirthError">Date of birth is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required aria-label="Gender">
+                            <option value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer-not-to-say">Prefer not to say</option>
+                        </select>
+                        <div class="error-message" id="genderError">Please select your gender</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a strong password" required aria-label="Password">
+                    <div class="password-strength" id="passwordStrength"></div>
+                    <div class="error-message" id="passwordError">Password must be at least 8 characters with uppercase, lowercase, and number</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required aria-label="Confirm Password">
+                    <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required aria-label="Agree to Terms of Service and Privacy Policy">
+                    <label for="terms">I agree to the <a href="#" id="termsLink">Terms of Service</a> and <a href="#" id="privacyLink">Privacy Policy</a></label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter" aria-label="Receive health tips and updates">
+                    <label for="newsletter">Send me health tips and updates via email</label>
+                </div>
+                
+                <button type="submit" class="register-button" id="registerBtn">Create Account</button>
+                <div class="success-message" id="successMessage">Account created successfully!</div>
+            </form>
+
+            <div class="or-register-with">or register with</div>
+
+            <div class="social-login-buttons">
+                <button class="social-button facebook" title="Register with Facebook" aria-label="Register with Facebook">f</button>
+                <button class="social-button google" title="Register with Google" aria-label="Register with Google">G</button>
+                <button class="social-button apple" title="Register with Apple" aria-label="Register with Apple">🍎</button>
+            </div>
+
+            <div class="signin-link">
+                Already have an account? <a href="#" id="signinLink">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form validation functions (no changes here, keeping for completeness)
+        const validateEmail = (email) => {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        };
+
+        const validatePhone = (phone) => {
+            const re = /^\+?[1-9]\d{1,14}$/; 
+            return re.test(phone.replace(/\s/g, ''));
+        };
+
+        const validatePassword = (password) => {
+            const minLength = password.length >= 8;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            return minLength && hasUpper && hasLower && hasNumber && hasSpecial;
+        };
+
+        const getPasswordStrength = (password) => {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+            
+            if (strength < 3) return { level: 'weak', text: 'Weak password' };
+            if (strength === 3) return { level: 'medium', text: 'Medium strength' };
+            if (strength >= 4) return { level: 'strong', text: 'Strong password' };
+            return { level: '', text: '' };
+        };
+
+        const validateName = (name) => {
+            return name.trim().length >= 2 && /^[a-zA-Z\s.-]+$/.test(name);
+        };
+
+        const validateAge = (dateOfBirth) => {
+            const today = new Date();
+            const birthDate = new Date(dateOfBirth);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age >= 13 && age <= 120;
+        };
+
+        const showError = (inputId, errorId, message) => {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            input.classList.add('invalid');
+            input.classList.remove('valid');
+            error.textContent = message;
+            error.style.display = 'block';
+        };
+
+        const showSuccess = (inputId, errorId) => {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            input.classList.add('valid');
+            input.classList.remove('invalid');
+            error.style.display = 'none';
+        };
+
+        // Event Listeners for Real-time Validation
+        document.getElementById('firstName').addEventListener('input', function() {
+            const name = this.value.trim();
+            if (name.length > 0) {
+                if (validateName(name)) {
+                    showSuccess('firstName', 'firstNameError');
+                } else {
+                    showError('firstName', 'firstNameError', 'Please enter a valid first name (letters, spaces, hyphens, periods only).');
+                }
+            } else {
+                this.classList.remove('valid', 'invalid');
+                document.getElementById('firstNameError').style.display = 'none';
+            }
+        });
+
+        document.getElementById('lastName').addEventListener('input', function() {
+            const name = this.value.trim();
+            if (name.length > 0) {
+                if (validateName(name)) {
+                    showSuccess('lastName', 'lastNameError');
+                } else {
+                    showError('lastName', 'lastNameError', 'Please enter a valid last name (letters, spaces, hyphens, periods only).');
+                }
+            } else {
+                this.classList.remove('valid', 'invalid');
+                document.getElementById('lastNameError').style.display = 'none';
+            }
+        });
+
+        document.getElementById('email').addEventListener('input', function() {
+            const email = this.value.trim();
+            if (email.length > 0) {
+                if (validateEmail(email)) {
+                    showSuccess('email', 'emailError');
+                } else {
+                    showError('email', 'emailError', 'Please enter a valid email address (e.g., user@example.com).');
+                }
+            } else {
+                this.classList.remove('valid', 'invalid');
+                document.getElementById('emailError').style.display = 'none';
+            }
+        });
+
+        document.getElementById('phone').addEventListener('input', function() {
+            const phone = this.value.trim();
+            if (phone.length > 0) {
+                if (validatePhone(phone)) {
+                    showSuccess('phone', 'phoneError');
+                } else {
+                    showError('phone', 'phoneError', 'Please enter a valid phone number (e.g., +1234567890).');
+                }
+            } else {
+                this.classList.remove('valid', 'invalid');
+                document.getElementById('phoneError').style.display = 'none';
+            }
+        });
+
+        document.getElementById('dateOfBirth').addEventListener('change', function() {
+            const dateOfBirth = this.value;
+            if (dateOfBirth) {
+                if (validateAge(dateOfBirth)) {
+                    showSuccess('dateOfBirth', 'dateOfBirthError');
+                } else {
+                    showError('dateOfBirth', 'dateOfBirthError', 'You must be between 13 and 120 years old to register.');
+                }
+            } else {
+                this.classList.remove('valid', 'invalid');
+                document.getElementById('dateOfBirthError').style.display = 'none';
+            }
+        });
+
+        document.getElementById('gender').addEventListener('change', function() {
+            if (this.value) {
+                showSuccess('gender', 'genderError');
+            } else {
+                this.classList.remove('valid', 'invalid');
+                document.getElementById('genderError').style.display = 'none';
+            }
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthIndicator = document.getElementById('passwordStrength');
+            
+            if (password.length > 0) {
+                const strength = getPasswordStrength(password);
+                strengthIndicator.textContent = strength.text;
+                strengthIndicator.className = `password-strength strength-${strength.level}`;
+                strengthIndicator.style.display = 'block';
+                
+                if (validatePassword(password)) {
+                    showSuccess('password', 'passwordError');
+                } else {
+                    showError('password', 'passwordError', 'Password must be at least 8 characters and include uppercase, lowercase, numbers, and special characters.');
+                }
+            } else {
+                strengthIndicator.style.display = 'none';
+                this.classList.remove('valid', 'invalid');
+                document.getElementById('passwordError').style.display = 'none';
+            }
+            // Also re-validate confirm password if password changes
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            if (confirmPasswordInput.value.length > 0) {
+                if (password === confirmPasswordInput.value) {
+                    showSuccess('confirmPassword', 'confirmPasswordError');
+                } else {
+                    showError('confirmPassword', 'confirmPasswordError', 'Passwords do not match');
+                }
+            }
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword.length > 0) {
+                if (password === confirmPassword) {
+                    showSuccess('confirmPassword', 'confirmPasswordError');
+                } else {
+                    showError('confirmPassword', 'confirmPasswordError', 'Passwords do not match');
+                }
+            } else {
+                this.classList.remove('valid', 'invalid');
+                document.getElementById('confirmPasswordError').style.display = 'none';
+            }
+        });
+
+        // Form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('registerBtn');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Get form values
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const dateOfBirth = document.getElementById('dateOfBirth').value;
+            const gender = document.getElementById('gender').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+            
+            let isValid = true;
+            
+            // Perform final validation on all fields
+            if (!firstName || !validateName(firstName)) {
+                showError('firstName', 'firstNameError', 'Please enter a valid first name.');
+                isValid = false;
+            } else {
+                showSuccess('firstName', 'firstNameError');
+            }
+            
+            if (!lastName || !validateName(lastName)) {
+                showError('lastName', 'lastNameError', 'Please enter a valid last name.');
+                isValid = false;
+            } else {
+                showSuccess('lastName', 'lastNameError');
+            }
+            
+            if (!email || !validateEmail(email)) {
+                showError('email', 'emailError', 'Please enter a valid email address.');
+                isValid = false;
+            } else {
+                showSuccess('email', 'emailError');
+            }
+            
+            if (!phone || !validatePhone(phone)) {
+                showError('phone', 'phoneError', 'Please enter a valid phone number.');
+                isValid = false;
+            } else {
+                showSuccess('phone', 'phoneError');
+            }
+            
+            if (!dateOfBirth || !validateAge(dateOfBirth)) {
+                showError('dateOfBirth', 'dateOfBirthError', 'You must be between 13 and 120 years old to register.');
+                isValid = false;
+            } else {
+                showSuccess('dateOfBirth', 'dateOfBirthError');
+            }
+            
+            if (!gender) {
+                showError('gender', 'genderError', 'Please select your gender.');
+                isValid = false;
+            } else {
+                showSuccess('gender', 'genderError');
+            }
+            
+            if (!password || !validatePassword(password)) {
+                showError('password', 'passwordError', 'Password must be at least 8 characters and include uppercase, lowercase, numbers, and special characters.');
+                isValid = false;
+            } else {
+                showSuccess('password', 'passwordError');
+            }
+            
+            if (!confirmPassword || password !== confirmPassword) {
+                showError('confirmPassword', 'confirmPasswordError', 'Passwords do not match');
+                isValid = false;
+            } else {
+                showSuccess('confirmPassword', 'confirmPasswordError');
+            }
+            
+            if (!terms) {
+                alert('Please agree to the Terms of Service and Privacy Policy to create an account.');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // Show loading state
+            btn.classList.add('loading');
+            btn.textContent = 'Creating Account...';
+            btn.disabled = true;
+            
+            // Simulate registration process (e.g., API call)
+            setTimeout(() => {
+                btn.classList.remove('loading');
+                btn.textContent = 'Account Created!';
+                btn.disabled = false;
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                successMessage.textContent = 'Account created successfully! Redirecting...';
+                
+                // Reset form fields after successful submission
+                this.reset();
+                document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('input, select').forEach(el => el.classList.remove('valid', 'invalid'));
+                document.getElementById('passwordStrength').style.display = 'none';
+
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                    successMessage.textContent = 'Account created successfully!';
+                    alert('Registration successful! You can now sign in.');
+                }, 2000);
+            }, 2000);
+        });
+
+        // Social registration handlers
+        document.querySelectorAll('.social-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const platform = this.classList.contains('facebook') ? 'Facebook' : 
+                                 this.classList.contains('google') ? 'Google' : 'Apple';
+                
+                this.style.transform = 'scale(0.9)';
+                this.style.opacity = '0.7';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                    this.style.opacity = '1';
+                    alert(`Initiating ${platform} login. (This is a demo, no actual login will occur.)`);
+                }, 300);
+            });
+        });
+
+        // Sign-in Link Handler
+        document.getElementById('signinLink').addEventListener('click', function(e) {
+            e.preventDefault(); // Keep this to prevent default link behavior first
+            // You can remove the alert now that you're redirecting
+            // alert('Redirecting to the Sign In page. (This is a demo)'); 
+            window.location.href = 'login.html'; // This will redirect to your login page
+        });
+
+        // Link handlers for Terms and Privacy (optional alerts, you might want to replace with actual modals or pages)
+        document.getElementById('termsLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Opening Terms of Service (demo).');
+        });
+
+        document.getElementById('privacyLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Opening Privacy Policy (demo).');
+        });
+    </script>
+</body>
+</html>
