@@ -11,11 +11,11 @@
 
     <style>
         /* ====================
-           1. CSS Variables & Animations
+           1. CSS Variables & Theme System
            ==================== */
         :root {
+            /* Light theme colors */
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            /* Updated secondary gradient to a new orange-red color */
             --secondary-gradient: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
             --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
@@ -26,18 +26,47 @@
             --secondary-color: #ff7e5f;
             --accent-color: #fe8c00;
             --success-color: #43e97b;
-            --dark-text: #1a202c;
-            --gray-text: #4a5568;
-            --light-gray: #f7fafc;
+            
+            /* Light theme specific */
+            --bg-primary: linear-gradient(-45deg, #667eea, #764ba2, #ff7e5f, #feb47b);
+            --bg-secondary: rgba(255, 255, 255, 0.95);
+            --bg-tertiary: #ffffff;
             --bg-dark: #1a202c;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-border: rgba(255, 255, 255, 0.2);
             
             --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
             --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme colors */
+            --bg-primary: linear-gradient(-45deg, #1a202c, #2d3748, #4a5568, #2d3748);
+            --bg-secondary: rgba(26, 32, 44, 0.95);
+            --bg-tertiary: #2d3748;
+            --bg-dark: #0f1419;
+            --text-primary: #ffffff;
+            --text-secondary: #e2e8f0;
+            --text-muted: #a0aec0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(45, 55, 72, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
             
-            --glassmorphism: rgba(255, 255, 255, 0.1);
-            --glassmorphism-border: rgba(255, 255, 255, 0.2);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.4), 0 10px 10px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Theme transition */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         @keyframes fadeInUp {
@@ -90,6 +119,10 @@
             100% { background-position: 0% 50%; }
         }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* ====================
            2. Base & Layout
            ==================== */
@@ -105,10 +138,10 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(-45deg, #667eea, #764ba2, #ff7e5f, #feb47b);
+            background: var(--bg-primary);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
-            color: var(--dark-text);
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
             position: relative;
@@ -123,6 +156,10 @@
             height: 100%;
             background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             z-index: -1;
+        }
+
+        [data-theme="dark"] body::before {
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
         .container {
@@ -156,7 +193,7 @@
 
         .section-subheading {
             font-size: clamp(1.125rem, 2.5vw, 1.375rem);
-            color: var(--gray-text);
+            color: var(--text-secondary);
             text-align: center;
             max-width: 700px;
             margin: 0 auto 80px;
@@ -164,7 +201,55 @@
         }
 
         /* ====================
-           3. Enhanced Components
+           3. Theme Toggle Button
+           ==================== */
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .theme-toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        [data-theme="dark"] .theme-toggle-slider {
+            transform: translateX(28px);
+        }
+
+        .theme-toggle-slider::before {
+            content: '☀️';
+        }
+
+        [data-theme="dark"] .theme-toggle-slider::before {
+            content: '🌙';
+        }
+
+        /* ====================
+           4. Enhanced Components
            ==================== */
         .btn {
             display: inline-flex;
@@ -209,15 +294,16 @@
         }
 
         .btn-secondary {
-            background: var(--glassmorphism);
-            color: white;
-            border: 2px solid var(--glassmorphism-border);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--card-border);
             backdrop-filter: blur(10px);
         }
 
         .btn-secondary:hover {
             transform: translateY(-3px) scale(1.05);
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--card-bg);
+            border-color: var(--primary-color);
         }
 
         .btn-accent {
@@ -232,7 +318,7 @@
         }
 
         /* ====================
-           4. Enhanced Header
+           5. Enhanced Header
            ==================== */
         .main-header {
             position: fixed;
@@ -240,8 +326,8 @@
             width: 100%;
             z-index: 1000;
             backdrop-filter: blur(20px);
-            background: var(--glassmorphism);
-            border-bottom: 1px solid var(--glassmorphism-border);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--card-border);
             transition: all 0.3s ease;
         }
 
@@ -275,7 +361,7 @@
 
         .nav-link {
             text-decoration: none;
-            color: white;
+            color: var(--text-primary);
             font-weight: 500;
             font-size: 1rem;
             transition: all 0.3s ease;
@@ -302,7 +388,7 @@
         }
 
         /* ====================
-           5. Hero Section
+           6. Hero Section
            ==================== */
         .hero-section {
             min-height: 100vh;
@@ -324,6 +410,10 @@
             animation: float 10s ease-in-out infinite;
         }
 
+        [data-theme="dark"] .hero-section::before {
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+        }
+
         .hero-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -342,7 +432,7 @@
             font-size: clamp(3rem, 8vw, 5rem);
             font-weight: 800;
             margin-bottom: 24px;
-            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -351,7 +441,7 @@
 
         .hero-subheading {
             font-size: clamp(1.25rem, 3vw, 1.5rem);
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
             margin-bottom: 40px;
             font-weight: 400;
         }
@@ -389,15 +479,16 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: var(--glassmorphism);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
-            border: 1px solid var(--glassmorphism-border);
+            border: 1px solid var(--card-border);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--text-primary);
             font-size: 24px;
             animation: float 4s ease-in-out infinite;
+            box-shadow: var(--shadow-lg);
         }
 
         .floating-element:nth-child(1) {
@@ -425,10 +516,10 @@
         }
 
         /* ====================
-           6. Enhanced Features Section
+           7. Enhanced Features Section
            ==================== */
         .features-section {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--bg-secondary);
             backdrop-filter: blur(20px);
             position: relative;
         }
@@ -441,11 +532,11 @@
         }
 
         .feature-card {
-            background: var(--glassmorphism);
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 40px;
-            border: 1px solid var(--glassmorphism-border);
+            border: 1px solid var(--card-border);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -484,25 +575,31 @@
             color: white;
             font-size: 32px;
             box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 1;
         }
 
         .feature-card h3 {
             font-size: 1.5rem;
             margin-bottom: 16px;
-            color: var(--dark-text);
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
         }
 
         .feature-card p {
-            color: var(--gray-text);
+            color: var(--text-secondary);
             line-height: 1.7;
+            position: relative;
+            z-index: 1;
         }
 
         /* ====================
-           7. Enhanced Testimonials
+           8. Enhanced Testimonials
            ==================== */
         .testimonials-section {
             background: var(--bg-dark);
-            color: white;
+            color: var(--text-primary);
             position: relative;
             overflow: hidden;
         }
@@ -527,11 +624,11 @@
         }
 
         .testimonial-card {
-            background: var(--glassmorphism);
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
             border-radius: 24px;
             padding: 40px;
-            border: 1px solid var(--glassmorphism-border);
+            border: 1px solid var(--card-border);
             transition: all 0.4s ease;
             position: relative;
         }
@@ -553,7 +650,7 @@
             font-style: italic;
             margin-bottom: 24px;
             line-height: 1.7;
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
         }
 
         .testimonial-author {
@@ -581,7 +678,7 @@
 
         .testimonial-name {
             font-weight: 600;
-            color: white;
+            color: var(--text-primary);
             margin-bottom: 4px;
         }
 
@@ -591,7 +688,7 @@
         }
 
         /* ====================
-           8. Enhanced CTA Section
+           9. Enhanced CTA Section
            ==================== */
         .cta-section {
             background: var(--bg-dark);
@@ -609,10 +706,6 @@
             background: conic-gradient(from 0deg, transparent, var(--primary-color), transparent, var(--accent-color), transparent);
             animation: spin 20s linear infinite;
             opacity: 0.1;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
 
         .cta-content {
@@ -634,18 +727,18 @@
 
         .cta-subheading {
             font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto 40px;
             line-height: 1.6;
         }
         
         /* ====================
-           9. Enhanced Footer
+           10. Enhanced Footer
            ==================== */
         .main-footer {
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #2d3748 100%);
-            color: rgba(255, 255, 255, 0.8);
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-tertiary) 100%);
+            color: var(--text-secondary);
             padding: 80px 0 30px;
             position: relative;
         }
@@ -658,13 +751,13 @@
         }
 
         .footer-section h3 {
-            color: white;
+            color: var(--text-primary);
             margin-bottom: 20px;
             font-size: 1.25rem;
         }
 
         .footer-section a {
-            color: rgba(255, 255, 255, 0.7);
+            color: white;
             text-decoration: none;
             display: block;
             margin-bottom: 10px;
@@ -689,14 +782,14 @@
         }
 
         .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--border-color);
             padding-top: 30px;
             text-align: center;
-            color: rgba(255, 255, 255, 0.6);
+            color: white;
         }
 
         /* ====================
-           10. Responsive Design
+           11. Responsive Design
            ==================== */
         @media (max-width: 768px) {
             .hero-container {
@@ -725,6 +818,20 @@
                 padding: 14px 24px;
                 font-size: 0.9rem;
             }
+
+            .theme-toggle {
+                width: 50px;
+                height: 28px;
+            }
+
+            .theme-toggle-slider {
+                width: 20px;
+                height: 20px;
+            }
+
+            [data-theme="dark"] .theme-toggle-slider {
+                transform: translateX(22px);
+            }
         }
 
         @media (max-width: 480px) {
@@ -739,7 +846,33 @@
             .hero-section {
                 padding: 120px 0 80px;
             }
+
+            .nav-links {
+                gap: 0.5rem;
+            }
+
+            .header-container {
+                padding: 15px 16px;
+            }
         }
+
+        /* ====================
+           12. Animation Classes
+           ==================== */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
     </style>
 </head>
 <body>
@@ -749,6 +882,9 @@
             <nav class="nav-links">
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#testimonials" class="nav-link">Testimonials</a>
+                <div class="theme-toggle" id="themeToggle">
+                    <div class="theme-toggle-slider"></div>
+                </div>
                 <a href="login.html" class="btn btn-primary">Get Started</a>
             </nav>
         </div>
@@ -767,8 +903,7 @@
                 </div>
                 <div class="hero-visual">
                     <div class="hero-visual-graphic">
-                        <img src="assets/img1.png" alt="A new medical related visual" style="width: 100%;">
-
+                        <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <linearGradient id="heroGradient" x1="0" y1="0" x2="1" y2="1">
                                     <stop offset="0%" stop-color="#667eea" />
@@ -799,6 +934,7 @@
                         <div class="floating-element">❤️</div>
                         <div class="floating-element">💊</div>
                         <div class="floating-element">📈</div>
+                        <div class="floating-element">🧠</div>
                     </div>
                 </div>
             </div>
@@ -824,15 +960,20 @@
                         <h3>Progress & Goal Tracking</h3>
                         <p>Set and monitor your health goals with visual progress reports. See how far you've come and stay motivated to achieve your wellness milestones.</p>
                     </div>
-                    <div class="feature-card">
+                    <div class="feature-card animate-on-scroll stagger-1">
                         <div class="feature-card-icon" style="background: var(--warning-gradient);">🍎</div>
                         <h3>Nutrition Tracking</h3>
                         <p>Log your meals, track your macros and calories, and get personalized dietary advice to fuel your body and reach your nutrition goals.</p>
                     </div>
-                    <div class="feature-card">
+                    <div class="feature-card animate-on-scroll stagger-2">
                         <div class="feature-card-icon" style="background: var(--info-gradient);">🤝</div>
                         <h3>Wellness Community</h3>
                         <p>Connect with a supportive community. Share your progress, get advice, and find motivation from others on a similar health journey.</p>
+                    </div>
+                    <div class="feature-card animate-on-scroll stagger-3">
+                        <div class="feature-card-icon" style="background: var(--accent-gradient);">🔒</div>
+                        <h3>Privacy & Security</h3>
+                        <p>Your health data is protected with enterprise-grade encryption and privacy controls. You own your data, always.</p>
                     </div>
                 </div>
             </div>
@@ -856,7 +997,7 @@
                     </div>
                     <div class="testimonial-card animate-on-scroll stagger-2">
                         <div class="testimonial-stars">★★★★★</div>
-                        <p class="testimonial-quote">"The user interface is so intuitive and clean. Tracking my health goals has become a habit I actually enjoy. Highly recommended!"</p>
+                        <p class="testimonial-quote">"The user interface is so intuitive and clean. The dark mode is perfect for late-night health tracking. Highly recommended!"</p>
                         <div class="testimonial-author">
                             <div class="testimonial-avatar">SR</div>
                             <div class="testimonial-info">
@@ -866,8 +1007,7 @@
                         </div>
                     </div>
                     <div class="testimonial-card animate-on-scroll stagger-3">
-                        <div class="testimonial-stars">★★★★★</div>
-                        <p class="testimonial-quote">"I was searching for a reliable app to manage my chronic illness. The data visualization and secure tracking features are exactly what I needed."</p>
+                        <div class="testimonial-quote">"I was searching for a reliable app to manage my chronic illness. The data visualization and secure tracking features are exactly what I needed."</p>
                         <div class="testimonial-author">
                             <div class="testimonial-avatar">AL</div>
                             <div class="testimonial-info">
@@ -896,7 +1036,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <a href="#" class="logo footer-logo">MediTrack</a>
-                    <p style="font-size: 0.9rem;">The future of personalized health and wellness.</p>
+                    <p style="font-size: 0.9rem; color: white;">The future of personalized health and wellness.</p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
@@ -912,11 +1052,113 @@
                     <a href="#">Blog</a>
                     <a href="#">Press</a>
                 </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <a href="#">Documentation</a>
+                    <a href="#">API Reference</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 MediTrack. All rights reserved. Built with passion for your health.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        body.setAttribute('data-theme', currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all elements with animate-on-scroll class
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.main-header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(20px)';
+            } else {
+                header.style.background = 'var(--card-bg)';
+                header.style.backdropFilter = 'blur(20px)';
+            }
+        });
+
+        // Add parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero-section::before');
+            const speed = scrolled * 0.5;
+            
+            // Apply transform only if element exists
+            if (parallax) {
+                parallax.style.transform = `translateY(${speed}px)`;
+            }
+        });
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+
+        // Enhance floating elements animation
+        const floatingElements = document.querySelectorAll('.floating-element');
+        floatingElements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.5}s`;
+            
+            // Add mouse follow effect
+            element.addEventListener('mouseenter', () => {
+                element.style.transform = 'scale(1.1) translateY(-5px)';
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                element.style.transform = 'scale(1) translateY(0)';
+            });
+        });
+    </script>
 </body>
 </html>
