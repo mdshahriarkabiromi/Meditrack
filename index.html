@@ -10,11 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* ====================
-           1. CSS Variables & Theme System
-           ==================== */
+        /* CSS Variables & Theme System */
         :root {
-            /* Light theme colors */
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --secondary-gradient: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
             --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
@@ -27,7 +24,6 @@
             --accent-color: #fe8c00;
             --success-color: #43e97b;
             
-            /* Light theme specific */
             --bg-primary: linear-gradient(-45deg, #667eea, #764ba2, #ff7e5f, #feb47b);
             --bg-secondary: rgba(255, 255, 255, 0.95);
             --bg-tertiary: #ffffff;
@@ -46,7 +42,6 @@
         }
 
         [data-theme="dark"] {
-            /* Dark theme colors */
             --bg-primary: linear-gradient(-45deg, #1a202c, #2d3748, #4a5568, #2d3748);
             --bg-secondary: rgba(26, 32, 44, 0.95);
             --bg-tertiary: #2d3748;
@@ -64,53 +59,32 @@
             --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.6);
         }
 
-        /* Theme transition */
         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             33% { transform: translateY(-10px) rotate(1deg); }
             66% { transform: translateY(-5px) rotate(-1deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
         }
 
         @keyframes gradientShift {
@@ -121,15 +95,6 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-
-        /* ====================
-           2. Base & Layout
-           ==================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
         }
 
         html {
@@ -200,9 +165,7 @@
             animation: fadeInUp 1s ease-out 0.2s both;
         }
 
-        /* ====================
-           3. Theme Toggle Button
-           ==================== */
+        /* Theme Toggle */
         .theme-toggle {
             position: relative;
             width: 60px;
@@ -248,9 +211,7 @@
             content: '🌙';
         }
 
-        /* ====================
-           4. Enhanced Components
-           ==================== */
+        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -266,7 +227,7 @@
             border: none;
             cursor: pointer;
         }
-        
+
         .btn::before {
             content: '';
             position: absolute;
@@ -281,7 +242,7 @@
         .btn:hover::before {
             left: 100%;
         }
-        
+
         .btn-primary {
             background: var(--primary-gradient);
             color: white;
@@ -317,9 +278,7 @@
             box-shadow: var(--shadow-xl);
         }
 
-        /* ====================
-           5. Enhanced Header
-           ==================== */
+        /* Header */
         .main-header {
             position: fixed;
             top: 0;
@@ -387,9 +346,7 @@
             color: var(--secondary-color);
         }
 
-        /* ====================
-           6. Hero Section
-           ==================== */
+        /* Hero Section */
         .hero-section {
             min-height: 100vh;
             display: flex;
@@ -515,9 +472,7 @@
             animation-delay: 3s;
         }
 
-        /* ====================
-           7. Enhanced Features Section
-           ==================== */
+        /* Features Section */
         .features-section {
             background: var(--bg-secondary);
             backdrop-filter: blur(20px);
@@ -540,6 +495,7 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .feature-card::before {
@@ -594,9 +550,35 @@
             z-index: 1;
         }
 
-        /* ====================
-           8. Enhanced Testimonials
-           ==================== */
+        /* Special styling for clickable medication card */
+        .medication-card {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .medication-card:hover {
+            transform: translateY(-15px) scale(1.05);
+        }
+
+        .medication-card::after {
+            content: '→';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .medication-card:hover::after {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        /* Testimonials Section */
         .testimonials-section {
             background: var(--bg-dark);
             color: var(--text-primary);
@@ -687,9 +669,7 @@
             font-size: 0.875rem;
         }
 
-        /* ====================
-           9. Enhanced CTA Section
-           ==================== */
+        /* CTA Section */
         .cta-section {
             background: var(--bg-dark);
             position: relative;
@@ -732,17 +712,15 @@
             margin: 0 auto 40px;
             line-height: 1.6;
         }
-        
-        /* ====================
-           10. Enhanced Footer
-           ==================== */
+
+        /* Footer */
         .main-footer {
             background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-tertiary) 100%);
             color: var(--text-secondary);
             padding: 80px 0 30px;
             position: relative;
         }
-        
+
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -788,9 +766,23 @@
             color: white;
         }
 
-        /* ====================
-           11. Responsive Design
-           ==================== */
+        /* Animation Classes */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .hero-container {
                 grid-template-columns: 1fr;
@@ -855,24 +847,6 @@
                 padding: 15px 16px;
             }
         }
-
-        /* ====================
-           12. Animation Classes
-           ==================== */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-
-        .animate-on-scroll.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .stagger-1 { transition-delay: 0.1s; }
-        .stagger-2 { transition-delay: 0.2s; }
-        .stagger-3 { transition-delay: 0.3s; }
     </style>
 </head>
 <body>
@@ -950,7 +924,7 @@
                         <h3>AI-Powered Insights</h3>
                         <p>Our advanced AI analyzes your data to give you actionable advice and insights into your health patterns, helping you make informed decisions.</p>
                     </div>
-                    <div class="feature-card animate-on-scroll stagger-2">
+                    <div class="feature-card medication-card animate-on-scroll stagger-2" onclick="location.href='feature2.html';">
                         <div class="feature-card-icon" style="background: var(--secondary-gradient);">💊</div>
                         <h3>Medication Management</h3>
                         <p>Effortlessly track your medications with smart reminders, dosage logs, and a comprehensive database to keep you on schedule and safe.</p>
@@ -1007,7 +981,8 @@
                         </div>
                     </div>
                     <div class="testimonial-card animate-on-scroll stagger-3">
-                        <div class="testimonial-quote">"I was searching for a reliable app to manage my chronic illness. The data visualization and secure tracking features are exactly what I needed."</p>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-quote">"I was searching for a reliable app to manage my chronic illness. The data visualization and secure tracking features are exactly what I needed."</p>
                         <div class="testimonial-author">
                             <div class="testimonial-avatar">AL</div>
                             <div class="testimonial-info">
@@ -1125,18 +1100,6 @@
             } else {
                 header.style.background = 'var(--card-bg)';
                 header.style.backdropFilter = 'blur(20px)';
-            }
-        });
-
-        // Add parallax effect to hero section
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero-section::before');
-            const speed = scrolled * 0.5;
-            
-            // Apply transform only if element exists
-            if (parallax) {
-                parallax.style.transform = `translateY(${speed}px)`;
             }
         });
 
